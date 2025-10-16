@@ -21,7 +21,7 @@ export default function App() {
 
 
   // Lấy role từ localStorage khi App mount
-const [role, setRole] = useState(localStorage.getItem("role") || null);
+const [role, setRole] = useState(sessionStorage.getItem("role") || null);
 
 
 

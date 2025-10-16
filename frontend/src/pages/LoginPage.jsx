@@ -3,20 +3,23 @@ import api from "../api/api";
 import { Link, useNavigate } from "react-router-dom";
 import { handleFrontendError } from "../common/FrontendCommonIssues";
 
-export default function Login({ onLogin }){
+export default function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  try {
+    e.preventDefault();
+    try {
       const res = await api.post("/auth/login", { username, password });
       const role = res.data.role.toUpperCase();
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", role);
+      sessionStorage.setItem("token", res.data.token);
+      sessionStorage.setItem("role", res.data.role.toUpperCase());
+
+      console.log("Token:", sessionStorage.getItem("token"));
+      console.log("Role:", sessionStorage.getItem("role"));
 
       // ⚡ Gọi callback để App update state role
       onLogin(role);
@@ -25,8 +28,8 @@ export default function Login({ onLogin }){
       else if (role === "USER") navigate("/user/home", { replace: true });
     } catch (err) {
       handleFrontendError(err);
-  }
-};
+    }
+  };
 
 
   return (
