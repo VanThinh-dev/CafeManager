@@ -1,48 +1,83 @@
 package com.example.backend.controller;
 
-
-import com.example.backend.model.Table;
-import com.example.backend.repository.TableRepository;  
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.backend.dto.TableResponseDto;
+import com.example.backend.model.Table;
+import com.example.backend.service.TableService;
+import com.example.backend.util.DtoMapper;
 
 @RestController
-@RequestMapping("/api/tables")
+@RequestMapping("/api")
 public class TableController {
 
     @Autowired
-    private TableRepository tableRepository;
+    private TableService tableService;
 
-    // Lấy tất cả bàn
-    @GetMapping
-    public List<Table> getAllTables() {
-        return tableRepository.findAll();
+    @GetMapping("/tables")
+    public ResponseEntity<List<TableResponseDto>> getAllTables() {
+        List<Table> tables = tableService.getAllTables();
+        List<TableResponseDto> tableDtos = tables.stream()
+                .map(DtoMapper::toTableResponseDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(tableDtos);
     }
 
-    // Tạo bàn mới
-    @PostMapping
-    public Table createTable(@RequestBody Table table) {
-        // check trùng số bàn
-        if (tableRepository.findByTableNumber(table.getTableNumber()).isPresent()) {
-            throw new RuntimeException("❌ Số bàn đã tồn tại!");
-        }
-        table.setStatus("AVAILABLE");
-        return tableRepository.save(table);
+    @GetMapping("/tables/available")
+    public ResponseEntity<List<TableResponseDto>> getAvailableTables() {
+        List<Table> tables = tableService.getAvailableTables();
+        List<TableResponseDto> tableDtos = tables.stream()
+                .map(DtoMapper::toTableResponseDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(tableDtos);
     }
 
-    // Cập nhật trạng thái bàn
-    @PutMapping("/{id}/status")
-    public Table updateTableStatus(@PathVariable String id, @RequestParam String status) {
-        Table t = tableRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("❌ Không tìm thấy bàn"));
-        t.setStatus(status);
-        return tableRepository.save(t);
+    @PostMapping("/admin/tables")
+    public ResponseEntity<TableResponseDto> createTable(@RequestBody Table table) {
+        Table createdTable = tableService.createTable(table);
+        TableResponseDto tableDto = DtoMapper.toTableResponseDto(createdTable);
+        return ResponseEntity.ok(tableDto);
     }
 
-    // Xóa bàn
-    @DeleteMapping("/{id}")
-    public void deleteTable(@PathVariable String id) {
-        tableRepository.deleteById(id);
+    @PutMapping("/admin/tables/{id}")
+    public ResponseEntity<TableResponseDto> updateTable(@PathVariable String id, @RequestBody Table table) {
+        Table updatedTable = tableService.updateTable(id, table);
+        TableResponseDto tableDto = DtoMapper.toTableResponseDto(updatedTable);
+        return ResponseEntity.ok(tableDto);
+    }
+
+    @PutMapping("/admin/tables/{id}/status")
+    public ResponseEntity<TableResponseDto> updateTableStatus(@PathVariable String id,
+            @RequestBody Map<String, String> statusMap) {
+        String status = statusMap.get("status");
+        Table updatedTable = tableService.updateTableStatus(id, status);
+        TableResponseDto tableDto = DtoMapper.toTableResponseDto(updatedTable);
+        return ResponseEntity.ok(tableDto);
+    }
+
+    @DeleteMapping("/admin/tables/{id}")
+    public ResponseEntity<?> deleteTable(@PathVariable String id) {
+        tableService.deleteTable(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/admin/tables/{id}/clear")
+    public ResponseEntity<TableResponseDto> clearTable(@PathVariable String id) {
+        Table updatedTable = tableService.updateTableStatus(id, "AVAILABLE");
+        TableResponseDto tableDto = DtoMapper.toTableResponseDto(updatedTable);
+        return ResponseEntity.ok(tableDto);
     }
 }
