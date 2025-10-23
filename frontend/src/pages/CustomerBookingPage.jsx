@@ -166,16 +166,23 @@ export default function CustomerBookingPage() {
                     <nav className="flex gap-4">
                         {user ? (
                             <div className="dropdown dropdown-end">
-                                <div tabIndex={0} className="text-white font-medium cursor-pointer">
-                                    Xin chào, {user.username}
-                                </div>
-                                <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-40 mt-2 text-base-content">
+                                <div tabIndex={0} className="cursor-pointer">
+                                    <img
+                                        src={user.avatar || "https://i.pravatar.cc/40"} // avatar user
+                                        alt={user.username}
+                                        className="w-10 h-10 rounded-full border-2 border-white"
+                                    />
+                                <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-44 mt-2 text-base-content">
+                                    <li>
+                                        <a href="/profile">Trang cá nhân</a>
+                                    </li>
                                     <li>
                                         <button onClick={handleLogout} className="text-error">
                                             Đăng xuất
                                         </button>
                                     </li>
                                 </ul>
+                                </div>
                             </div>
                         ) : (
                             <a href="/login" className="text-white font-medium hover:underline">Đăng nhập</a>

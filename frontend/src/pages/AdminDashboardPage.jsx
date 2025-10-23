@@ -230,236 +230,118 @@ export default function AdminDashboardPage() {
     };
 
     return (
-        <div className="container mx-auto p-6 max-w-7xl">
-            {/* Connection Status */}
-            <div className="mb-4 flex gap-4 items-center">
-                {isLoading && (
-                    <span className="loading loading-spinner loading-xs"></span>
-                )}
-            </div>
-            <div className="mb-6">
-                <h1 className="text-3xl font-bold text-base-content mb-2">Dashboard Quản lý</h1>
-                <p className="text-base-content/70">Quản lý bàn và đơn hàng</p>
-            </div>
+       <div className="container mx-auto p-6 max-w-7xl">
+    <h1 className="text-3xl font-bold text-gray-800 mb-2">Dashboard Quản lý</h1>
+    <p className="text-gray-600 mb-6">Quản lý bàn và đơn hàng</p>
 
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                {/* Bảng hiển thị bàn */}
-                <div className="xl:col-span-2">
-                    <div className="card bg-base-100 shadow-xl">
-                        <div className="card-body">
-                            <h2 className="card-title text-xl mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                                Trạng thái bàn
-                            </h2>
-
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
-                                {tables.map((table) => {
-                                    const tableOrders = getOrdersForTable(table.id);
-                                    const isSelected = selectedTable?.id === table.id;
-
-                                    return (
-                                        <div
-                                            key={table.id}
-                                            onClick={() => setSelectedTable(table)}
-                                            className={`card cursor-pointer transition-all duration-200 hover:scale-105 ${isSelected
-                                                ? 'ring-2 ring-primary bg-primary/10'
-                                                : 'hover:shadow-lg'
-                                                }`}
-                                        >
-                                            <div className="card-body p-4 text-center">
-                                                <div className="text-2xl font-bold text-base-content">
-                                                    Bàn {table.tableNumber}
-                                                </div>
-                                                <div className={`badge badge-sm mt-2 ${table.status === 'AVAILABLE' ? 'badge-success' :
-                                                    table.status === 'OCCUPIED' ? 'badge-warning' :
-                                                        'badge-info'
-                                                    }`}>
-                                                    {getStatusText(table.status)}
-                                                </div>
-                                                {tableOrders.length > 0 && (
-                                                    <div className="badge badge-error badge-sm mt-1">
-                                                        {tableOrders.length} đơn
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-
-                            {/* Thống kê nhanh */}
-                            <div className="stats stats-vertical sm:stats-horizontal shadow w-full">
-                                <div className="stat">
-                                    <div className="stat-figure text-success">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <div className="stat-title">Bàn trống</div>
-                                    <div className="stat-value text-success">
-                                        {tables.filter(t => t.status === 'AVAILABLE').length}
-                                    </div>
-                                </div>
-
-                                <div className="stat">
-                                    <div className="stat-figure text-warning">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
-                                        </svg>
-                                    </div>
-                                    <div className="stat-title">Đang phục vụ</div>
-                                    <div className="stat-value text-warning">
-                                        {tables.filter(t => t.status === 'OCCUPIED').length}
-                                    </div>
-                                </div>
-
-                                <div className="stat">
-                                    <div className="stat-figure text-info">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                    </div>
-                                    <div className="stat-title">Đơn hàng chờ</div>
-                                    <div className="stat-value text-info">{orders.length}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Chi tiết bàn được chọn */}
-                <div className="xl:col-span-1">
-                    <div className="card bg-base-100 shadow-xl">
-                        <div className="card-body">
-                            {selectedTable ? (
-                                <>
-                                    <h2 className="card-title text-lg mb-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                        </svg>
-                                        Bàn số {selectedTable.tableNumber}
-                                    </h2>
-
-                                    <div className="form-control mb-4">
-                                        <label className="label">
-                                            <span className="label-text font-medium">Cập nhật trạng thái</span>
-                                        </label>
-                                        <select
-                                            className="select select-bordered w-full"
-                                            value={selectedTable.status}
-                                            onChange={(e) => updateTableStatus(selectedTable.id, e.target.value)}
-                                        >
-                                            <option value="AVAILABLE">Trống</option>
-                                            <option value="OCCUPIED">Có khách</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="divider">Đơn hàng</div>
-
-                                    {getOrdersForTable(selectedTable.id).length === 0 ? (
-                                        <div className="text-center py-8">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-base-content/30 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                            </svg>
-                                            <p className="text-base-content/70">Không có đơn hàng nào</p>
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-4 max-h-96 overflow-y-auto">
-                                            {getOrdersForTable(selectedTable.id).map((order) => (
-                                                <div key={order.id} className="card bg-base-200 shadow-sm">
-                                                    <div className="card-body p-4">
-                                                        <div className="flex justify-between items-start mb-2">
-                                                            <div>
-                                                                <div className="font-medium text-sm">
-                                                                    {order.user.fullName || order.user.username}
-                                                                </div>
-                                                                <div className="text-xs text-base-content/70">
-                                                                    {new Date(order.orderTime).toLocaleString('vi-VN')}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="space-y-1 mb-3">
-                                                            {order.items.map((item, idx) => (
-                                                                <div key={idx} className="flex justify-between text-sm">
-                                                                    <span>{item.menuItem.name} x{item.quantity}</span>
-                                                                    <span className="font-medium">{item.subtotal.toLocaleString()} đ</span>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-
-                                                        <div className="divider my-2"></div>
-                                                        <div className="flex justify-between items-center font-bold text-base">
-                                                            <span>Tổng cộng:</span>
-                                                            <span className="text-error">{order.totalAmount.toLocaleString()} đ</span>
-                                                        </div>
-
-                                                        <div className="flex gap-2 mt-3">
-                                                            {order.status === 'PENDING' && (
-                                                                <button
-                                                                    onClick={() => confirmOrder(order.id)}
-                                                                    className="btn btn-primary btn-sm flex-1"
-                                                                >
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                                    </svg>
-                                                                    Xác nhận
-                                                                </button>
-                                                            )}
-                                                            {order.status === 'CONFIRMED' && (
-                                                                <button
-                                                                    onClick={() => checkInTable(order.table.id)}
-                                                                    className="btn btn-warning btn-sm flex-1"
-                                                                >
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                                    </svg>
-                                                                    Check-in
-                                                                </button>
-                                                            )}
-                                                            {order.status === 'OCCUPIED' && (
-                                                                <button
-                                                                    onClick={() => completeOrder(order.id)}
-                                                                    className="btn btn-success btn-sm flex-1"
-                                                                >
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                                    </svg>
-                                                                    Hoàn thành
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </>
-                            ) : (
-                                <div className="text-center py-8">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-base-content/30 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
-                                    </svg>
-                                    <p className="text-base-content/70">Chọn một bàn để xem chi tiết</p>
+    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        {/* Danh sách bàn */}
+        <div className="xl:col-span-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {tables.map((table) => {
+                    const isSelected = selectedTable?.id === table.id;
+                    return (
+                        <div
+                            key={table.id}
+                            onClick={() => setSelectedTable(table)}
+                            className={`cursor-pointer rounded-lg p-4 text-center font-medium text-white transition-all duration-200
+                                ${table.status === 'AVAILABLE' ? 'bg-green-500' :
+                                  table.status === 'OCCUPIED' ? 'bg-yellow-400' :
+                                  table.status === 'PENDING' || table.status === 'CONFIRMED' ? 'bg-blue-500' :
+                                  'bg-gray-400'}
+                                ${isSelected ? 'ring-4 ring-indigo-500' : 'hover:brightness-110'}`}
+                        >
+                            <div className="text-lg font-bold">Bàn {table.tableNumber}</div>
+                            <div className="mt-2">{getStatusText(table.status)}</div>
+                            {getOrdersForTable(table.id).length > 0 && (
+                                <div className="mt-1 bg-red-600 text-white text-sm rounded-full px-2 py-1 inline-block">
+                                    {getOrdersForTable(table.id).length} đơn
                                 </div>
                             )}
                         </div>
-                    </div>
-                </div>
+                    );
+                })}
             </div>
 
-            {/* Confirm Dialog */}
-            <ConfirmDialog
-                isOpen={confirmDialog.isOpen}
-                onClose={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
-                onConfirm={confirmDialog.onConfirm}
-                title={confirmDialog.title}
-                message={confirmDialog.message}
-                type={confirmDialog.type}
-            />
+            {/* Thống kê nhanh */}
+            <div className="flex gap-4 mt-6">
+                <div className="flex-1 p-4 rounded-lg bg-green-100 text-green-800 font-semibold text-center">
+                    Bàn trống: {tables.filter(t => t.status === 'AVAILABLE').length}
+                </div>
+                <div className="flex-1 p-4 rounded-lg bg-yellow-100 text-yellow-800 font-semibold text-center">
+                    Đang phục vụ: {tables.filter(t => t.status === 'OCCUPIED').length}
+                </div>
+                <div className="flex-1 p-4 rounded-lg bg-blue-100 text-blue-800 font-semibold text-center">
+                    Đơn chờ: {orders.length}
+                </div>
+            </div>
         </div>
+
+        {/* Chi tiết bàn */}
+        <div className="xl:col-span-1">
+            <div className="p-6 rounded-lg bg-white shadow-lg min-h-[300px]">
+                {selectedTable ? (
+                    <>
+                        <h2 className="text-lg font-semibold mb-4">Bàn số {selectedTable.tableNumber}</h2>
+
+                        <div className="mb-4">
+                            <label className="block font-medium mb-1">Cập nhật trạng thái</label>
+                            <select
+                                className="w-full border border-gray-300 rounded-lg p-2"
+                                value={selectedTable.status}
+                                onChange={(e) => updateTableStatus(selectedTable.id, e.target.value)}
+                            >
+                                <option value="AVAILABLE">Trống</option>
+                                <option value="OCCUPIED">Có khách</option>
+                            </select>
+                        </div>
+
+                        <div className="mb-2 font-semibold">Đơn hàng</div>
+                        {getOrdersForTable(selectedTable.id).length === 0 ? (
+                            <p className="text-gray-500">Không có đơn hàng</p>
+                        ) : (
+                            <div className="space-y-4 max-h-96 overflow-y-auto">
+                                {getOrdersForTable(selectedTable.id).map((order) => (
+                                    <div key={order.id} className="border border-gray-200 rounded-lg p-3">
+                                        <div className="flex justify-between mb-2">
+                                            <span className="font-medium">{order.user.fullName || order.user.username}</span>
+                                            <span className="text-sm text-gray-500">{new Date(order.orderTime).toLocaleString('vi-VN')}</span>
+                                        </div>
+                                        <div className="space-y-1">
+                                            {order.items.map((item, idx) => (
+                                                <div key={idx} className="flex justify-between text-sm">
+                                                    <span>{item.menuItem.name} x{item.quantity}</span>
+                                                    <span>{item.subtotal.toLocaleString()} đ</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="border-t border-gray-200 mt-2 pt-2 flex justify-between font-bold">
+                                            <span>Tổng cộng:</span>
+                                            <span className="text-red-600">{order.totalAmount.toLocaleString()} đ</span>
+                                        </div>
+
+                                        <div className="flex gap-2 mt-2">
+                                            {order.status === 'PENDING' && (
+                                                <button onClick={() => confirmOrder(order.id)} className="flex-1 bg-blue-500 text-white p-2 rounded-lg">Xác nhận</button>
+                                            )}
+                                            {order.status === 'CONFIRMED' && (
+                                                <button onClick={() => checkInTable(order.table.id)} className="flex-1 bg-yellow-400 text-white p-2 rounded-lg">Check-in</button>
+                                            )}
+                                            {order.status === 'OCCUPIED' && (
+                                                <button onClick={() => completeOrder(order.id)} className="flex-1 bg-green-500 text-white p-2 rounded-lg">Hoàn thành</button>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <p className="text-gray-500 text-center mt-20"></p>
+                )}
+            </div>
+        </div>
+    </div>
+</div>
     );
 }

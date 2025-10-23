@@ -107,23 +107,24 @@ export default function AdminTablesPage() {
         }
     };
 
-    return (
+
+       return (
         <div className="container mx-auto p-6 max-w-7xl">
-            <div className="mb-6">
-                <h1 className="text-3xl font-bold text-base-content mb-2">Quản lý Bàn</h1>
-                <p className="text-base-content/70">Thêm, sửa và quản lý các bàn trong quán</p>
+            {/* Header */}
+            <div className="mb-8">
+                <h1 className="text-4xl font-extrabold text-primary mb-2">Quản lý Bàn</h1>
+                <p className="text-base-content/70 text-lg">Thêm, sửa và quản lý các bàn trong quán</p>
             </div>
 
-            <div className="card bg-base-100 shadow-xl mb-6">
+            {/* Form Thêm/Sửa bàn */}
+            <div className="card bg-gradient-to-r from-base-100 to-base-200 shadow-xl mb-8 border border-base-300">
                 <div className="card-body">
-                    <h2 className="card-title text-xl mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
+                    <h2 className="card-title text-xl mb-4 flex items-center gap-2">
                         {editingId ? 'Cập nhật bàn' : 'Thêm bàn mới'}
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {/* Số bàn */}
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text font-medium">Số bàn</span>
@@ -131,12 +132,13 @@ export default function AdminTablesPage() {
                                 <input
                                     type="number"
                                     placeholder="Nhập số bàn"
-                                    className="input input-bordered w-full"
+                                    className="input input-bordered w-full focus:border-primary focus:ring focus:ring-primary/30"
                                     value={formData.tableNumber}
                                     onChange={(e) => setFormData({ ...formData, tableNumber: e.target.value })}
                                     required
                                 />
                             </div>
+                            {/* Số chỗ */}
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text font-medium">Số chỗ ngồi</span>
@@ -144,11 +146,12 @@ export default function AdminTablesPage() {
                                 <input
                                     type="number"
                                     placeholder="Nhập số chỗ ngồi"
-                                    className="input input-bordered w-full"
+                                    className="input input-bordered w-full focus:border-primary focus:ring focus:ring-primary/30"
                                     value={formData.seats}
                                     onChange={(e) => setFormData({ ...formData, seats: e.target.value })}
                                 />
                             </div>
+                            {/* Trạng thái */}
                             <div className="form-control">
                                 <label className="label">
                                     <span className="label-text font-medium">Trạng thái</span>
@@ -164,18 +167,14 @@ export default function AdminTablesPage() {
                                 </select>
                             </div>
                         </div>
+
+                        {/* Buttons */}
                         <div className="flex gap-2">
-                            <button type="submit" className="btn btn-primary">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                                </svg>
+                            <button type="submit" className="btn btn-primary flex items-center gap-2">
                                 {editingId ? 'Cập nhật' : 'Thêm mới'}
                             </button>
                             {editingId && (
-                                <button type="button" onClick={resetForm} className="btn btn-ghost">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
+                                <button type="button" onClick={resetForm} className="btn btn-ghost flex items-center gap-2">
                                     Hủy
                                 </button>
                             )}
@@ -184,73 +183,61 @@ export default function AdminTablesPage() {
                 </div>
             </div>
 
-            <div className="card bg-base-100 shadow-xl">
-                <div className="card-body">
-                    <h2 className="card-title text-xl mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                        Danh sách bàn
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        {tables.map((table) => {
-                            return (
-                                <div key={table.id} className="card bg-base-200 shadow-sm">
-                                    <div className="card-body p-4">
-                                        <h3 className="card-title text-lg mb-2">
-                                            Bàn số {table.tableNumber}
-                                        </h3>
-                                        <p className="text-sm text-base-content/70 mb-2">
-                                            Số chỗ: {table.seats || 'Không xác định'}
-                                        </p>
-                                        <div className={`badge badge-sm mb-4 ${table.status === 'AVAILABLE' ? 'badge-success' :
-                                            table.status === 'OCCUPIED' ? 'badge-warning' :
-                                                'badge-info'
-                                            }`}>
-                                            {getStatusText(table.status)}
-                                        </div>
+            {/* Danh sách bàn */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {tables.map((table) => (
+                    <div
+                        key={table.id}
+                        className={`card shadow-lg border rounded-lg overflow-hidden transition-transform hover:scale-105`}
+                    >
+                        <div className="card-body p-5 bg-gradient-to-tr from-base-100 to-base-200">
+                            <h3 className="card-title text-xl mb-1 font-semibold">
+                                Bàn số {table.tableNumber}
+                            </h3>
+                            <p className="text-sm text-base-content/70 mb-3">
+                                Số chỗ: {table.seats || 'Không xác định'}
+                            </p>
 
-                                        <div className="form-control mb-4">
-                                            <label className="label">
-                                                <span className="label-text text-xs">Đổi trạng thái:</span>
-                                            </label>
-                                            <select
-                                                className="select select-bordered select-sm w-full"
-                                                value={table.status}
-                                                onChange={(e) => handleStatusChange(table.id, e.target.value)}
-                                            >
-                                                <option value="AVAILABLE">Trống</option>
-                                                <option value="OCCUPIED">Có khách</option>
-                                                <option value="PAID">Đã thanh toán</option>
-                                            </select>
-                                        </div>
+                            <span
+                                className={`badge badge-lg mb-4 ${table.status === 'AVAILABLE'
+                                    ? 'badge-success'
+                                    : table.status === 'OCCUPIED'
+                                        ? 'badge-warning'
+                                        : 'badge-info'
+                                    }`}
+                            >
+                                {getStatusText(table.status)}
+                            </span>
 
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => handleEdit(table)}
-                                                className="btn btn-warning btn-sm flex-1"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
-                                                Sửa
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(table.id)}
-                                                className="btn btn-error btn-sm flex-1"
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                                Xóa
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                            {/* Chọn trạng thái */}
+                            <select
+                                className="select select-bordered select-sm w-full mb-4"
+                                value={table.status}
+                                onChange={(e) => handleStatusChange(table.id, e.target.value)}
+                            >
+                                <option value="AVAILABLE">Trống</option>
+                                <option value="OCCUPIED">Có khách</option>
+                                <option value="PAID">Đã thanh toán</option>
+                            </select>
+
+                            {/* Actions */}
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => handleEdit(table)}
+                                    className="btn btn-warning btn-sm flex-1 hover:scale-105 transition-transform"
+                                >
+                                    Sửa
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(table.id)}
+                                    className="btn btn-error btn-sm flex-1 hover:scale-105 transition-transform"
+                                >
+                                    Xóa
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                ))}
             </div>
 
             {/* Confirm Dialog */}

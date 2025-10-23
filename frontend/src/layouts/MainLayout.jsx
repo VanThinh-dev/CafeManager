@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import ThemeSelector from '../components/ThemeSelector';
 import { getNavRoutes, ROUTES } from '../config/routes';
 import { useAuth } from '../hooks/useAuth';
@@ -15,6 +15,7 @@ export default function MainLayout() {
     const userRole = isAdmin() ? 'ADMIN' : 'CUSTOMER';
     const navRoutes = getNavRoutes(userRole);
     const currentUserId = useMemo(() => user?.id, [user]);
+    const location = useLocation();
 
     useEffect(() => {
         if (!user || !isConnected) return;
@@ -45,57 +46,66 @@ export default function MainLayout() {
     const firstLetter = displayName.charAt(0).toUpperCase();
 
     return (
-        <div className="min-h-screen bg-base-200 flex">
-            {/* Sidebar dọc */}
-            {user && (
-                <div className="w-60 bg-primary text-primary-content flex flex-col justify-between shadow-lg">
-                    <div className="flex flex-col gap-2 p-4">
-                        <Link to={ROUTES.ROOT} className="btn btn-ghost text-xl mb-4 flex items-center gap-2">
-                            <img
-                                src="https://i.pinimg.com/736x/b5/87/66/b5876617ab1ca0d46ec3a8c375626e20.jpg"  // URL ảnh trên mạng
-                                alt="Logo"
-                                className="w-8 h-8 object-contain"
-                            />
-                            Admin
-                        </Link>
+        <div className="min-h-screen flex">
+    {/* Sidebar dọc */}
+    {user && (
+        <div className="w-60 bg-black text-white flex flex-col justify-between shadow-lg">
+            {/* Phần trên: Logo + Links */}
+            <div className="flex flex-col gap-2 p-4">
+                <Link to={ROUTES.ROOT} className="btn btn-ghost text-xl mb-4 flex items-center gap-2 text-white">
+                    <img
+                        src="https://i.pinimg.com/736x/b5/87/66/b5876617ab1ca0d46ec3a8c375626e20.jpg"
+                        alt="Logo"
+                        className="w-8 h-8 object-contain"
+                    />
+                    Admin
+                </Link>
 
-                        <ul className="menu menu-vertical flex-1 gap-2">
-                            <li><Link to={ROUTES.ROOT} className="hover:bg-primary-focus">Trang chủ</Link></li>
-                            {navRoutes.map(route => (
-                                <li key={route.path}>
-                                    <Link to={route.path} className="hover:bg-primary-focus">{route.navLabel}</Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Bottom: chỉ còn Theme + Avatar */}
-                    <div className="flex items-center justify-between p-4 border-t border-primary-focus">
-
-                        {/* Avatar */}
-                        <div className="dropdown dropdown-end">
-                            <div tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                                <div className={`w-10 rounded-full bg-primary-content text-primary ${isConnected ? 'ring ring-success ring-offset-5 ring-offset-base-500' : ''}`}>
-                                    <span className="text-lg font-bold">{firstLetter}</span>
-                                </div>
-                            </div>
-                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-base-content">
-                                <li>
-                                    <div className="text-sm font-medium text-base-content/70">
-                                        Xin chào, {displayName}
-                                    </div>
-                                </li>
-                                <li><button onClick={logout} className="text-error">Đăng xuất</button></li>
-                            </ul>
-                        </div>
-                    </div>
+                <div className="flex flex-col">
+                    {navRoutes.map(route => {
+                        const isActive = location.pathname === route.path;
+                        return (
+                            <Link
+                                key={route.path}
+                                to={route.path}
+                                className={`block p-3 rounded-lg shadow-lg text-white font-medium transition-all duration-200
+                                    ${isActive ? 'bg-blue-600 scale-105 shadow-xl' : 'bg-blue-500 hover:bg-blue-600 hover:shadow-lg'}
+                                    mb-2`}
+                            >
+                                {route.navLabel}
+                            </Link>
+                        );
+                    })}
                 </div>
-            )}
+            </div>
 
-            {/* Nội dung chính */}
-            <div className="flex-1 p-4">
-                <Outlet />
+            {/* Phần dưới: Avatar + Logout */}
+            <div className="flex flex-col gap-2 p-4 border-t border-gray-700">
+                <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-full bg-primary-content text-primary flex items-center justify-center
+                        ${isConnected ? 'ring ring-success ring-offset-2 ring-offset-black' : ''}`}>
+                        {firstLetter}
+                    </div>
+                    <div className="text-white font-medium">{displayName}</div>
+                </div>
+
+                <button
+                    onClick={logout}
+                    className="mt-2 px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 shadow text-white font-medium transition"
+                >
+                    Đăng xuất
+                </button>
             </div>
         </div>
+    )}
+
+    {/* Nội dung chính */}
+    <div className="flex-1 bg-blue-100 flex items-center justify-center p-4">
+        {/* Card nổi bật ở giữa */}
+        <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-4xl">
+            <Outlet />
+        </div>
+    </div>
+</div>
     );
 }

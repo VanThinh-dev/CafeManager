@@ -17,7 +17,7 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-    host: true, // Cho phép truy cập từ mạng LAN
+    host: 'localhost', // Chỉ lắng nghe localhost
     proxy: {
       '/api': {
         target:
