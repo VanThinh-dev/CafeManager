@@ -27,17 +27,7 @@ public class DataInitializer implements CommandLineRunner {
         log.info("Starting default user initialization...");
 
         try {
-            // Create root user
-            if (userRepository.findByUsername("root").isEmpty()) {
-                User root = new User();
-                root.setUsername("root");
-                root.setPassword(passwordEncoder.encode("root123"));
-                root.setRole("ADMIN");
-                root.setFullName("Root User");
-                userRepository.save(root);
-                log.info("Root user created: username=root, password=root123");
-            }
-
+            
             // Create admin user
             if (userRepository.findByUsername("admin").isEmpty()) {
                 User admin = new User();
@@ -47,39 +37,6 @@ public class DataInitializer implements CommandLineRunner {
                 admin.setFullName("System Administrator");
                 userRepository.save(admin);
                 log.info("Admin user created: username=admin, password=admin123");
-            }
-
-            // Create manager user
-            if (userRepository.findByUsername("manager").isEmpty()) {
-                User manager = new User();
-                manager.setUsername("manager");
-                manager.setPassword(passwordEncoder.encode("manager123"));
-                manager.setRole("MANAGER");
-                manager.setFullName("Manager User");
-                userRepository.save(manager);
-                log.info("Manager user created: username=manager, password=manager123");
-            }
-
-            // Create staff user 1
-            if (userRepository.findByUsername("staff1").isEmpty()) {
-                User staff = new User();
-                staff.setUsername("staff1");
-                staff.setPassword(passwordEncoder.encode("staff123"));
-                staff.setRole("STAFF");
-                staff.setFullName("Staff User");
-                userRepository.save(staff);
-                log.info("Staff user created: username=staff1, password=staff123");
-            }
-
-            // Create staff user 2
-            if (userRepository.findByUsername("staff2").isEmpty()) {
-                User staff = new User();
-                staff.setUsername("staff2");
-                staff.setPassword(passwordEncoder.encode("staff123"));
-                staff.setRole("STAFF");
-                staff.setFullName("Staff User");
-                userRepository.save(staff);
-                log.info("Staff user created: username=staff2, password=staff123");
             }
 
             // Create customer user
